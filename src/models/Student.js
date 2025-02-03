@@ -1,7 +1,7 @@
 import Sequelize, { Model } from 'sequelize';
 
 
-export default class Aluno extends Model { // config do sequelize
+export default class Student extends Model { // config do sequelize
 
   static init(sequelize) {
     super.init({

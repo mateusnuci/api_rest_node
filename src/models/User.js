@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 
 export default class User extends Model {
 
-
   static init(sequelize) {
     super.init({
       nome: {
@@ -24,7 +23,6 @@ export default class User extends Model {
             msg: 'Email invalido',
           },
         }
-
       },
       password_hash: {
         type: Sequelize.STRING,

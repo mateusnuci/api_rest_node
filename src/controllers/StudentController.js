@@ -1,10 +1,18 @@
 import Student from '../models/Student';
+import Photo from '../models/Photo';
 
 class StudentController {
 
   async index(req, res) {
     try {
-      const students = await Student.findAll();
+      const students = await Student.findAll({
+        attributes: ['id', 'nome', 'sobrenome', 'email', 'idade', 'peso', 'altura'],
+        order: [['id', 'DESC'], [Photo, 'id', 'DESC']],
+        include: {
+          model: Photo,
+          attributes: ['url', 'filename']
+        }
+      });
       console.log("Students encontrados:", students);
 
       res.status(200).json(students)
@@ -16,7 +24,14 @@ class StudentController {
 
   async show(req, res) {
     try {
-      const student = await Student.findByPk(req.params.id)
+      const student = await Student.findByPk(req.params.id, {
+        attributes: ['id', 'nome', 'sobrenome', 'email', 'idade', 'peso', 'altura'],
+        order: [['id', 'DESC'], [Photo, 'id', 'DESC']],
+        include: {
+          model: Photo,
+          attributes: ['url','filename']
+        }
+      })
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
@@ -32,7 +47,7 @@ class StudentController {
       res.status(201).json(newStudent)
     } catch (e) {
       console.error("Erro ao criar estudantes:", e.name, e.message, e.stack);
-    res.status(500).json({ errors: [e.message || "Erro inesperado"] });
+      res.status(500).json({ errors: [e.message || "Erro inesperado"] });
     }
   }
 
@@ -49,7 +64,7 @@ class StudentController {
     try {
       const student = await Student.findByPk(req.params.id)
       if (!student) {
-        return res.status(400).json({ message: "resource not found" })
+        return res.status(404).json({ message: "resource not found" })
       }
       const updatedStudent = await student.update(req.body)
       res.status(200).json(updatedStudent)
